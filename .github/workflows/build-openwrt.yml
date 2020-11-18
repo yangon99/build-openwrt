@@ -69,3 +69,4 @@ jobs:
       with:
         name: Firmwares
         path: /home/runner/openwrt/bin/targets/
+
