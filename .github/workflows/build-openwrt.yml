@@ -11,6 +11,14 @@ on:
 #  watch:
 #    types: started
  repository_dispatch:
+   inputs:
+      build-device:
+        description: 'Target device name'
+        required: true
+        default: ''
+      build-proc:
+        description: 'Number of build procs'
+        required: false
 
 jobs:
   build:
@@ -59,7 +67,11 @@ jobs:
         mv .config .config_default
         rm -f .config.old
         config_names="$(ls .config*)"
-        for i in $config_names;do mv -f $i .config; make defconfig; make -j$[$(nproc)+1]; rm -rf build_dir/target* build_dir/toolchain* staging_dir/target* staging_dir/toolchain*; done
+        config_file_name=.config.${{ github.event.inputs.build-device }}
+        [ -f "${config_file_name}" ] && mv -f ${ config_file_name } .config || echo "Don't exisit ${config_file_name}"
+        make defconfig
+        [ "${{github.event.inputs.build-proc}"==""] && make -j$[$(nproc)+1] || make -j ${{github.event.inputs.build-proc }}
+        rm -rf build_dir/target* build_dir/toolchain* staging_dir/target* staging_dir/toolchain*
     - name: After Build
       run: |
         /bin/bash /home/runner/openwrt/after_build.sh
