@@ -68,7 +68,7 @@ jobs:
         rm -f .config.old
         config_names="$(ls .config*)"
         config_file_name=.config.${{ github.event.inputs.build-device }}
-        [ -f "${config_file_name}" ] && mv -f ${ config_file_name } .config || echo "Don't exisit ${config_file_name}"
+        [ -f "${config_file_name}" ] && mv -f ${config_file_name} .config || echo "Don't exisit ${config_file_name}"
         make defconfig
         [ "${{github.event.inputs.build-proc}}"==""] && make -j$[$(nproc)+1] || make -j ${{github.event.inputs.build-proc }}
         rm -rf build_dir/target* build_dir/toolchain* staging_dir/target* staging_dir/toolchain*
